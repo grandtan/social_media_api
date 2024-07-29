@@ -1,33 +1,5 @@
 # Social Media API
 
-## Objective
-
-Develop a small Go application or set of features that demonstrates your ability to work with the language and relevant technologies.
-Recommended Time: 2-3 hours; this is the scope/quality we seek.
-Recommended Application: Small Social Media (that allows users to post text)
-
-## Requirements
-
-1. **API Development**
-   - Create a RESTful API to manage a resource (e.g., users, posts).
-   - Implement CRUD operations.
-   - Use appropriate HTTP status codes.
-   - Secure the API with authentication (basic token authentication could be sufficient).
-2. **Database Integration**
-   - Use GORM to define models with relationships (e.g., one-to-many, many-to-many).
-   - Implement model validations.
-   - Write at least one migration to alter the database schema.
-3. **Frontend (Optional, if time allows)**
-   - Develop a simple front end using Go templates or a JavaScript frontend that consumes the API.
-   - Implement simple forms to create and edit the models and list views to display them.
-4. **Testing**
-   - Write unit tests for the models, including validations and methods.
-   - Write functional tests for the API endpoints, ensuring all cases are covered.
-5. **Error Handling**
-   - Implement error handling in the API that gracefully handles common errors such as records not being found or invalid data.
-6. **Documentation**
-   - Document the API endpoints with request and response examples. This can be in the form of comments in the controller, a README file, or a tool like Swagger.
-
 ## Setup Instructions
 
 1. **Clone the repository:**
