@@ -91,6 +91,9 @@ curl -X DELETE http://localhost:8080/users/1
 
 Certainly! Here's the documentation in English for using curl to test all endpoints of your API.
 
+Application Overview
+This application is a simple social media platform where users can create accounts and post text content. The API provides endpoints to create, read, update, and delete users and posts. Authentication is implemented to secure the endpoints.
+
 API Documentation
 
 1. Create a New User
