@@ -15,7 +15,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	user := models.User{
 		Name:  "Test User",
@@ -37,14 +37,16 @@ func TestCreateUser(t *testing.T) {
 
 func TestGetUser(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	// Create a user first
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
 	}
-	database.DB.Create(&user)
+	if err := database.DB.Create(&user).Error; err != nil {
+		t.Fatalf("could not create user: %v", err)
+	}
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/users/%d", user.ID), nil)
 	resp := httptest.NewRecorder()
@@ -59,14 +61,16 @@ func TestGetUser(t *testing.T) {
 
 func TestDeleteUser(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	// Create a user first
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
 	}
-	database.DB.Create(&user)
+	if err := database.DB.Create(&user).Error; err != nil {
+		t.Fatalf("could not create user: %v", err)
+	}
 
 	req, _ := http.NewRequest("DELETE", fmt.Sprintf("/users/%d", user.ID), nil)
 	resp := httptest.NewRecorder()

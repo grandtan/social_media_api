@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// CreateUser handles the creation of a new user
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -29,6 +30,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// GetUser handles fetching a user by ID
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User
@@ -39,12 +41,14 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// GetUsers handles fetching all users
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
 	database.DB.Find(&users)
 	json.NewEncoder(w).Encode(users)
 }
 
+// UpdateUser handles updating a user by ID
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User
@@ -62,6 +66,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(user)
 }
 
+// DeleteUser handles deleting a user by ID
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	var user models.User

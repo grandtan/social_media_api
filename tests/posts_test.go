@@ -8,22 +8,14 @@ import (
 	"net/http/httptest"
 	"social_media_app/database"
 	"social_media_app/models"
-	"social_media_app/routes"
 	"testing"
 
-	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/assert"
 )
 
-func setupRouter() *mux.Router {
-	router := mux.NewRouter()
-	routes.RegisterRoutes(router)
-	return router
-}
-
 func TestCreatePost(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	post := models.Post{
 		UserID:  1,
@@ -45,14 +37,16 @@ func TestCreatePost(t *testing.T) {
 
 func TestGetPost(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	// Create a post first
 	post := models.Post{
 		UserID:  1,
 		Content: "Test Content",
 	}
-	database.DB.Create(&post)
+	if err := database.DB.Create(&post).Error; err != nil {
+		t.Fatalf("could not create post: %v", err)
+	}
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/posts/%d", post.ID), nil)
 	resp := httptest.NewRecorder()
@@ -67,14 +61,16 @@ func TestGetPost(t *testing.T) {
 
 func TestDeletePost(t *testing.T) {
 	database.Connect()
-	router := setupRouter()
+	router := SetupRouter()
 
 	// Create a post first
 	post := models.Post{
 		UserID:  1,
 		Content: "Test Content",
 	}
-	database.DB.Create(&post)
+	if err := database.DB.Create(&post).Error; err != nil {
+		t.Fatalf("could not create post: %v", err)
+	}
 
 	req, _ := http.NewRequest("DELETE", fmt.Sprintf("/posts/%d", post.ID), nil)
 	resp := httptest.NewRecorder()
