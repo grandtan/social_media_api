@@ -13,20 +13,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func setup() {
+func setupUsers() {
 	database.Connect()
 	database.DB.Exec("DELETE FROM users")
 	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='users'")
 }
 
-func teardown() {
+func teardownUsers() {
 	database.DB.Exec("DELETE FROM users")
 	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='users'")
 }
 
 func TestCreateUser(t *testing.T) {
-	setup()
-	defer teardown()
+	setupUsers()
+	defer teardownUsers()
 
 	router := SetupRouter()
 
@@ -42,7 +42,6 @@ func TestCreateUser(t *testing.T) {
 
 	router.ServeHTTP(resp, req)
 
-	// Debugging: Print the response body
 	fmt.Println("Response Body:", resp.Body.String())
 
 	assert.Equal(t, http.StatusOK, resp.Code)
@@ -52,12 +51,11 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestGetUser(t *testing.T) {
-	setup()
-	defer teardown()
+	setupUsers()
+	defer teardownUsers()
 
 	router := SetupRouter()
 
-	// Create a user first
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
@@ -71,7 +69,6 @@ func TestGetUser(t *testing.T) {
 
 	router.ServeHTTP(resp, req)
 
-	// Debugging: Print the response body
 	fmt.Println("Response Body:", resp.Body.String())
 
 	assert.Equal(t, http.StatusOK, resp.Code)
@@ -81,12 +78,11 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestDeleteUser(t *testing.T) {
-	setup()
-	defer teardown()
+	setupUsers()
+	defer teardownUsers()
 
 	router := SetupRouter()
 
-	// Create a user first
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
@@ -100,7 +96,6 @@ func TestDeleteUser(t *testing.T) {
 
 	router.ServeHTTP(resp, req)
 
-	// Debugging: Print the response body
 	fmt.Println("Response Body:", resp.Body.String())
 
 	assert.Equal(t, http.StatusOK, resp.Code)

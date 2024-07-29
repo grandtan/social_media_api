@@ -13,8 +13,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreatePost(t *testing.T) {
+func setupPosts() {
 	database.Connect()
+	database.DB.Exec("DELETE FROM posts")
+	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='posts'")
+}
+
+func teardownPosts() {
+	database.DB.Exec("DELETE FROM posts")
+	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='posts'")
+}
+
+func TestCreatePost(t *testing.T) {
+	setupPosts()
+	defer teardownPosts()
+
 	router := SetupRouter()
 
 	post := models.Post{
@@ -29,6 +42,8 @@ func TestCreatePost(t *testing.T) {
 
 	router.ServeHTTP(resp, req)
 
+	fmt.Println("Response Body:", resp.Body.String())
+
 	assert.Equal(t, http.StatusOK, resp.Code)
 	var createdPost models.Post
 	json.Unmarshal(resp.Body.Bytes(), &createdPost)
@@ -36,10 +51,11 @@ func TestCreatePost(t *testing.T) {
 }
 
 func TestGetPost(t *testing.T) {
-	database.Connect()
+	setupPosts()
+	defer teardownPosts()
+
 	router := SetupRouter()
 
-	// Create a post first
 	post := models.Post{
 		UserID:  1,
 		Content: "Test Content",
@@ -53,6 +69,8 @@ func TestGetPost(t *testing.T) {
 
 	router.ServeHTTP(resp, req)
 
+	fmt.Println("Response Body:", resp.Body.String())
+
 	assert.Equal(t, http.StatusOK, resp.Code)
 	var fetchedPost models.Post
 	json.Unmarshal(resp.Body.Bytes(), &fetchedPost)
@@ -60,10 +78,11 @@ func TestGetPost(t *testing.T) {
 }
 
 func TestDeletePost(t *testing.T) {
-	database.Connect()
+	setupPosts()
+	defer teardownPosts()
+
 	router := SetupRouter()
 
-	// Create a post first
 	post := models.Post{
 		UserID:  1,
 		Content: "Test Content",
@@ -76,6 +95,8 @@ func TestDeletePost(t *testing.T) {
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
+
+	fmt.Println("Response Body:", resp.Body.String())
 
 	assert.Equal(t, http.StatusOK, resp.Code)
 }
