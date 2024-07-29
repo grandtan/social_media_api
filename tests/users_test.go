@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"social_media_app/database"
 	"social_media_app/models"
+	"social_media_app/utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,6 +18,10 @@ func setupUsers() {
 	database.Connect()
 	database.DB.Exec("DELETE FROM users")
 	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='users'")
+	user := models.User{Name: "Test User", Email: "test@example.com"}
+	database.DB.Create(&user)
+	token, _ := utils.GenerateJWT(user.ID)
+	testToken = token
 }
 
 func teardownUsers() {
@@ -31,13 +36,14 @@ func TestCreateUser(t *testing.T) {
 	router := SetupRouter()
 
 	user := models.User{
-		Name:  "Test User",
-		Email: "test@example.com",
+		Name:  "New User",
+		Email: "new@example.com",
 	}
 	jsonUser, _ := json.Marshal(user)
 
 	req, _ := http.NewRequest("POST", "/users", bytes.NewBuffer(jsonUser))
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
@@ -65,6 +71,7 @@ func TestGetUser(t *testing.T) {
 	}
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/users/%d", user.ID), nil)
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
@@ -92,6 +99,7 @@ func TestDeleteUser(t *testing.T) {
 	}
 
 	req, _ := http.NewRequest("DELETE", fmt.Sprintf("/users/%d", user.ID), nil)
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)

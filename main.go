@@ -2,16 +2,15 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"social_media_app/database"
 	"social_media_app/routes"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	database.Connect()
-	router := mux.NewRouter()
+	router := gin.Default()
 	routes.RegisterRoutes(router)
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(router.Run(":8080"))
 }

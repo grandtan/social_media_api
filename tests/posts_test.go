@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"social_media_app/database"
 	"social_media_app/models"
+	"social_media_app/utils"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,6 +18,10 @@ func setupPosts() {
 	database.Connect()
 	database.DB.Exec("DELETE FROM posts")
 	database.DB.Exec("DELETE FROM sqlite_sequence WHERE name='posts'")
+	user := models.User{Name: "Test User", Email: "test@example.com"}
+	database.DB.Create(&user)
+	token, _ := utils.GenerateJWT(user.ID)
+	testToken = token
 }
 
 func teardownPosts() {
@@ -38,6 +43,7 @@ func TestCreatePost(t *testing.T) {
 
 	req, _ := http.NewRequest("POST", "/posts", bytes.NewBuffer(jsonPost))
 	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
@@ -65,6 +71,7 @@ func TestGetPost(t *testing.T) {
 	}
 
 	req, _ := http.NewRequest("GET", fmt.Sprintf("/posts/%d", post.ID), nil)
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)
@@ -92,6 +99,7 @@ func TestDeletePost(t *testing.T) {
 	}
 
 	req, _ := http.NewRequest("DELETE", fmt.Sprintf("/posts/%d", post.ID), nil)
+	req.Header.Set("Authorization", "Bearer "+testToken)
 	resp := httptest.NewRecorder()
 
 	router.ServeHTTP(resp, req)

@@ -3,11 +3,13 @@ package tests
 import (
 	"social_media_app/routes"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter() *mux.Router {
-	router := mux.NewRouter()
+var testToken string
+
+func SetupRouter() *gin.Engine {
+	router := gin.Default()
 	routes.RegisterRoutes(router)
 	return router
 }

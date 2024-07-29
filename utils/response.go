@@ -1,22 +1,13 @@
 package utils
 
 import (
-	"encoding/json"
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
-func RespondJSON(w http.ResponseWriter, status int, payload interface{}) {
-	response, err := json.Marshal(payload)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("HTTP 500: Internal Server Error"))
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	w.Write(response)
+func RespondJSON(c *gin.Context, status int, payload interface{}) {
+	c.JSON(status, payload)
 }
 
-func RespondError(w http.ResponseWriter, status int, message string) {
-	RespondJSON(w, status, map[string]string{"error": message})
+func RespondError(c *gin.Context, status int, message string) {
+	RespondJSON(c, status, gin.H{"error": message})
 }
