@@ -7,14 +7,21 @@
    git clone https://github.com/yourusername/social_media_api.git
    cd social_media_api
 
-2. Install dependencies: go mod download
+2. Install dependencies:
 
-3. Setup the database and Run the server: go run main.go
+go mod download
 
-How to Run Tests
-Run unit tests:go test ./tests
+3. Setup the database and Run the server:
 
-API Documentation
+go run main.go
+
+## How to Run Tests
+
+Run unit tests:
+
+go test ./tests
+
+## API Documentation
 
 1. Create a New User
    Endpoint: POST /users
