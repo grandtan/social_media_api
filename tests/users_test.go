@@ -62,6 +62,8 @@ func TestGetUser(t *testing.T) {
 
 	router := SetupRouter()
 
+	// ลบผู้ใช้เพื่อให้แน่ใจว่าไม่มีผู้ใช้ที่ซ้ำกัน
+	database.DB.Exec("DELETE FROM users")
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
@@ -90,6 +92,7 @@ func TestDeleteUser(t *testing.T) {
 
 	router := SetupRouter()
 
+	database.DB.Exec("DELETE FROM users")
 	user := models.User{
 		Name:  "Test User",
 		Email: "test@example.com",
